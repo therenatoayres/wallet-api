@@ -16,8 +16,10 @@ type route struct {
 }
 
 const (
-	basePath         string = "/wallet"
-	exchangeRatePath string = "/rate"
+	basePath               string = "/wallet"
+	exchangeRatePath       string = "/rate"
+	getTotalConversionPath string = "/total"
+	getRatePath            string = "/tax"
 )
 
 type listOfRoutes []route
@@ -43,4 +45,6 @@ var routes = listOfRoutes{
 
 	// rate: used to get the currency rate between one currency to one or more diffent currencies
 	route{"GetCurrencyRate", "GET", basePath + exchangeRatePath, controller.GetCurrencyRate},
+	route{"GetTotal", "POST", basePath + getTotalConversionPath, controller.getTotalConversion},
+	route{"GetTax", "GET", basePath + getRatePath, controller.getRate},
 }

@@ -95,11 +95,39 @@ func parseYahooResponse(yahoo string) (float64, error) {
 
 	split := strings.Split(yahoo, ",")
 
-	value, err := strconv.ParseFloat(split[1], 32)
+	value, err := strconv.ParseFloat(split[1], 64)
 	if err != nil {
 		log.Println(err)
 		return 0, err
 	}
 
 	return value, nil
+}
+
+func getTax(currency *dto.Currency) (string, error) {
+
+	url := yahoofinanceURL + currency.CodeFrom + currency.CodeTo + "=X"
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal("NewRequest: ", err)
+		return "", fmt.Errorf("Error creating request")
+	}
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return "", fmt.Errorf("Error creating request")
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	response := string(body)
+
+	fmt.Println("Response From YAHOO: ", response)
+
+	return response, nil
 }

@@ -11,3 +11,11 @@ type Rate struct {
 	Conversion Currency `json:"conversion"`
 	Value      float64  `json:"value"`
 }
+
+//Represente a con and an amount
+type WalletItem struct {
+	coin  string  `json: "coin"`
+	value float64 `json: "value"`
+}
+
+type WalletItems []WalletItem
