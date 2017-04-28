@@ -104,7 +104,8 @@ func parseYahooResponse(yahoo string) (float64, error) {
 	return value, nil
 }
 
-func getTax(currency *dto.Currency) (string, error) {
+//COMMENT
+func GetTax(currency *dto.Currency) (string, error) {
 
 	url := yahoofinanceURL + currency.CodeFrom + currency.CodeTo + "=X"
 

@@ -66,7 +66,8 @@ func GetCurrencyRate(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func getRate(w http.ResponseWriter, r *http.Request) {
+//GetCurrencyRate  used to get the currency rate between one currency to one or more diffent currencies
+func GetRate(w http.ResponseWriter, r *http.Request) {
 
 	var currency dto.Currency
 
@@ -75,7 +76,7 @@ func getRate(w http.ResponseWriter, r *http.Request) {
 	currency.CodeFrom = parameters["from"][0]
 	currency.CodeTo = parameters["to"][0]
 
-	t, err := service.getTax(&currency)
+	t, err := service.GetTax(&currency)
 
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -91,7 +92,8 @@ func getRate(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getTotalConversion(w http.ResponseWriter, r *http.Request) {
+//comment
+func GetTotalConversion(w http.ResponseWriter, r *http.Request) {
 
 	//1. create a conversion Slice and a con Slice
 	var coins dto.WalletItems
@@ -124,9 +126,9 @@ func getTotalConversion(w http.ResponseWriter, r *http.Request) {
 	var total float64
 	for i := 0; i < len(coins); i++ {
 
-		conversion := dto.Currency{coins[i].coin, to}
+		conversion := dto.Currency{coins[i].Coin, to}
 
-		t, err := service.getTax(&conversion)
+		t, err := service.GetTax(&conversion)
 
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -144,8 +146,8 @@ func getTotalConversion(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		fmt.Println("Rate for "+coins[i].coin+" is ", c)
-		total = total + c*coins[i].value
+		fmt.Println("Rate for "+coins[i].Coin+" is ", c)
+		total = total + c*coins[i].Value
 	}
 
 	fmt.Println("---------------------")

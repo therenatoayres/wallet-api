@@ -45,6 +45,6 @@ var routes = listOfRoutes{
 
 	// rate: used to get the currency rate between one currency to one or more diffent currencies
 	route{"GetCurrencyRate", "GET", basePath + exchangeRatePath, controller.GetCurrencyRate},
-	route{"GetTotal", "POST", basePath + getTotalConversionPath, controller.getTotalConversion},
-	route{"GetTax", "GET", basePath + getRatePath, controller.getRate},
+	route{"GetTotal", "POST", basePath + getTotalConversionPath, controller.GetTotalConversion},
+	route{"GetTax", "GET", basePath + getRatePath, controller.GetRate},
 }
