@@ -19,3 +19,8 @@ type WalletItem struct {
 }
 
 type WalletItems []WalletItem
+
+type YahooResponse struct {
+	Rate float64 `json: "rate"`
+	Date string  `json: "date"`
+}

@@ -105,14 +105,15 @@ func parseYahooResponse(yahoo string) (float64, error) {
 }
 
 //COMMENT
-func GetTax(currency *dto.Currency) (string, error) {
+func GetTax(currency *dto.Currency) (*dto.YahooResponse, error) {
 
 	url := yahoofinanceURL + currency.CodeFrom + currency.CodeTo + "=X"
+	var yResponse *dto.YahooResponse
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal("NewRequest: ", err)
-		return "", fmt.Errorf("Error creating request")
+		return yResponse, fmt.Errorf("Error creating request")
 	}
 
 	client := &http.Client{}
@@ -120,15 +121,35 @@ func GetTax(currency *dto.Currency) (string, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal("Do: ", err)
-		return "", fmt.Errorf("Error creating request")
+		return yResponse, fmt.Errorf("Error creating request")
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return yResponse, fmt.Errorf("Error creating request")
+	}
+
 	response := string(body)
+
+	splittedResponse := strings.Split(response, ",")
+
+	date := splittedResponse[2] + splittedResponse[3]
+	rate, err := strconv.ParseFloat(splittedResponse[1], 64)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return yResponse, fmt.Errorf("Error creating request")
+	}
 
 	fmt.Println("Response From YAHOO: ", response)
 
-	return response, nil
+	yResponse = &dto.YahooResponse{
+
+		Rate: rate,
+		Date: date,
+	}
+
+	return yResponse, nil
 }

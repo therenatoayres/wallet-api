@@ -6,8 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"log"
 
@@ -88,7 +86,11 @@ func GetRate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(t))
+	if err := json.NewEncoder(w).Encode(t); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(500) // server error
+		panic(err)
+	}
 
 }
 
@@ -139,15 +141,10 @@ func GetTotalConversion(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		rate := strings.Split(t, ",")[1]
+		rate := t.Rate
 
-		c, err := strconv.ParseFloat(rate, 64)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println("Rate for "+coins[i].Coin+" is ", c)
-		total = total + c*coins[i].Value
+		fmt.Println("Rate for "+coins[i].Coin+" is ", rate)
+		total = total + rate*coins[i].Value
 	}
 
 	fmt.Println("---------------------")
