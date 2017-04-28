@@ -1,5 +1,9 @@
 package dto
 
+import (
+	"time"
+)
+
 //Currency represents two currency codes, a from and a to, to aid in conversion
 type Currency struct {
 	CodeFrom string `json:"from"`
@@ -21,6 +25,6 @@ type WalletItem struct {
 type WalletItems []WalletItem
 
 type YahooResponse struct {
-	Rate float64 `json: "rate"`
-	Date string  `json: "date"`
+	Rate float64   `json: "rate"`
+	Date time.Time `json: "datetime"`
 }

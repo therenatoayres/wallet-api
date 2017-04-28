@@ -6,10 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"unicode/utf8"
 
 	"strings"
 
 	"strconv"
+
+	"time"
 
 	"github.com/therenatoayres/wallet-api/dto"
 )
@@ -136,7 +139,15 @@ func GetTax(currency *dto.Currency) (*dto.YahooResponse, error) {
 
 	splittedResponse := strings.Split(response, ",")
 
-	date := strings.Replace(splittedResponse[2], "\"", "", -1) + " " + strings.TrimSpace(strings.Replace(splittedResponse[3], "\"", "", -1))
+	//dateString := strings.Replace(splittedResponse[2], "\"", "", -1) + " " + strings.TrimSpace(strings.Replace(splittedResponse[3], "\"", "", -1))
+	date, err := treatDate(splittedResponse[2] + " " + splittedResponse[3])
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return yResponse, fmt.Errorf("Error creating request")
+	}
+
+	date = date.UTC()
+
 	rate, err := strconv.ParseFloat(splittedResponse[1], 64)
 	if err != nil {
 		log.Fatal("Do: ", err)
@@ -152,4 +163,30 @@ func GetTax(currency *dto.Currency) (*dto.YahooResponse, error) {
 	}
 
 	return yResponse, nil
+}
+
+func treatDate(dateString string) (time.Time, error) {
+
+	var date time.Time
+
+	dateString = strings.TrimSpace(strings.Replace(dateString, "\"", "", -1))
+
+	dateAndTime := strings.Split(dateString, " ")
+	dayMonthandYear := strings.Split(dateAndTime[0], "/")
+
+	day := dayMonthandYear[1]
+	month := dayMonthandYear[0]
+	year := dayMonthandYear[2]
+
+	if utf8.RuneCountInString(month) == 1 {
+		month = "0" + month
+	}
+
+	date, err := time.Parse("02/01/2006 15:04pm", day+"/"+month+"/"+year+" "+dateAndTime[1])
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return date, fmt.Errorf("Error creating request")
+	}
+
+	return date.UTC(), nil
 }
