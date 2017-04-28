@@ -136,7 +136,7 @@ func GetTax(currency *dto.Currency) (*dto.YahooResponse, error) {
 
 	splittedResponse := strings.Split(response, ",")
 
-	date := splittedResponse[2] + splittedResponse[3]
+	date := strings.Replace(splittedResponse[2], "\"", "", -1) + " " + strings.TrimSpace(strings.Replace(splittedResponse[3], "\"", "", -1))
 	rate, err := strconv.ParseFloat(splittedResponse[1], 64)
 	if err != nil {
 		log.Fatal("Do: ", err)
